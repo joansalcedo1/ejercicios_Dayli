@@ -1,18 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, /*useEffect*/} from "react";
 import Login from "../components/Login";
 import Register from "../components/Register";
-import { getUsuarios } from "../services/services";
+
 function Login_logic() {
     const [estado, setEstado] = useState("cargando");
-    const [usuarios, setUsuarios] =useState([]);
+    
 
-    useEffect(() => {
-        async function fetchData(){
-            const data=await getUsuarios();
-            
-        }
-        fetchData();
-    }, []);
+    /*useEffect(() => {
+
+    }, []);*/
     
     /*function changeLogin() {
         setEstado("login")
@@ -36,10 +32,7 @@ function Login_logic() {
                 </div>
             </>
         );
-    }
-
-
-              
+    }    
     return (
         <>
             <div className="grid grid-cols-2 h-screen w-full bg-gray-100 items-center">
