@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { login } from "../services/services";
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { login } from "../services/services.js"
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -44,23 +50,18 @@ function Login() {
                         <form onSubmit={handleLogin}>
                             <div className=" py-2">
                                 <p>Email</p>
-                                <input
-                                    onChange={evento => setMail(evento.target.value)}
-                                    type="text" placeholder="Ingresa tu email"
-                                    className="w-full p-2 mb-3 rounded border border-gray-300"
-                                    required
+                                <TextField
+                                    id="standard-textarea"
+                                    label="Multiline Placeholder"
+                                    placeholder="Placeholder"
+                                    multiline
+                                    variant="standard"
                                 />
+
                             </div>
-                            <div className="grid grid-cols-1 ">
+                            <div className="grid grid-cols-1 py-4">
                                 <p>Password</p>
-                                <span className="flex items-center gap-3">
-                                    {/*<input
-                                        onChange={evento => setPass(evento.target.value)}
-                                        type={typePass}
-                                        placeholder="Ingresa tu contraseña"
-                                        className="w-full p-2 mb-3 rounded border border-gray-300"
-                                        required
-                                    />*/}
+                                <span className="flex items-center gap-3 ">
                                     <Input
                                         id="standard-adornment-password"
                                         type={showPassword ? 'text' : 'password'}
@@ -80,13 +81,6 @@ function Login() {
                                             </InputAdornment>
                                         }
                                     />
-                                    <button
-                                        type="button"
-                                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                                        onClick={handlePassword}
-                                    >
-                                        ver
-                                    </button>
                                 </span>
                             </div>
                             <div>
