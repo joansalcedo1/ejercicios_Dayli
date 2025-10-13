@@ -53,6 +53,22 @@ exports.getUsers = async(req,res)=>{
         return res.status(500).json({message:"Hubo un problema buscando ese usuario"})
     }
 }
+exports.getUserByMail= async(req,res)=>{
+    try {
+        console.log("req.body:", req.body);
+        
+        const {mail} = req.body;
+        const usuario = await userModel.findOne({'mail': mail});
+        console.log(mail)
+        if(!usuario){
+            return res.status(404).json({message:"Usuario no existe"});
+        }
+        return res.status(200).json(usuario);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({message:"Hubo un problema buscando ese usuario"})
+    }
+}
 exports.getAccounts = async(req,res)=>{
     try {
         const usuarios = await accountModel.find();
