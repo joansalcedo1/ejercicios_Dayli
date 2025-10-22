@@ -5,14 +5,18 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
+import AutohideSnackbar from "../components/SnackBar.jsx";
+import SpotlightCard from "./SpotligthCard.jsx";
+
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
-
     const [email, setMail] = useState("")
     const [pass, setPass] = useState("")
-
+    const [showSnackbar, setShowSnackBar] = useState(false)
+    const [snackMessage, setSnackMessage] = useState(null)
+    const [alertSeverity, setAlertSeverity] = useState("success")
+    //Ver contraseña 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
@@ -20,41 +24,54 @@ function Login() {
     const handleMouseUpPassword = (event) => {
         event.preventDefault();
     };
+
     async function handleLogin(e) {
         e.preventDefault();
         console.log(email)
         const response = await login(email, pass)
         console.log(response)
-        if (response.data.password == pass) {
-            console.log("contraseña correcta")
-        } else {
-            console.log("contraseña INcorrecta")
+        if (response.status) {
+            setShowSnackBar(true);
+            setSnackMessage(response.statusText);
+            setAlertSeverity("error");
+            
+        }else{
+            if (response.data.mail == email & response.data.password == pass) {
+                console.log(`Bienvenido ${response.data.name}`);
+                setShowSnackBar(true);
+                setSnackMessage(`Bienvenido ${response.data.name}`);
+                setAlertSeverity("succes");
+                setShowSnackBar(false);
+            } else {
+                setShowSnackBar(true);
+                setSnackMessage(`Contraseña incorrecta`);
+                setAlertSeverity("error");
+                console.log("contraseña INcorrecta")
+                setShowSnackBar(false);
+            }
         }
-        if (response.data.mail == email) {
-            console.log("Correo correcto")
-        } else {
-            console.log("Correo INcorrecto")
-        }
-
     }
-
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     return (
         <>
 
             <div className="flex flex-row items-center text-white justify-center">
-                <div id="log_father" className="pt-5 px-15 bg-gray-700 rounded-4xl">
+
+                <SpotlightCard id="log_father" className="pt-5 px-15 bg-gray-700 rounded-4xl">
                     <h2 className="text-2xl font-bold pb-10">Log in </h2>
                     <div className="grid">
                         <form onSubmit={handleLogin}>
-                            <div className=" py-2">
+                            <div className="grid grid-cols-1 py-4">
                                 <p>Email</p>
-                                <TextField
+                                <Input
                                     id="standard-textarea"
-                                    label="Multiline Placeholder"
-                                    placeholder="Placeholder"
-                                    multiline
+                                    onChange={(evento) => {
+                                        setMail(evento.target.value)
+                                        console.log(evento.target.value)
+                                    }
+                                    }
+                                    placeholder="alguien@gmail.com"
                                     variant="standard"
                                 />
 
@@ -66,6 +83,7 @@ function Login() {
                                         id="standard-adornment-password"
                                         type={showPassword ? 'text' : 'password'}
                                         onChange={evento => setPass(evento.target.value)}
+                                        placeholder="********"
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <IconButton
@@ -85,6 +103,9 @@ function Login() {
                             </div>
                             <div>
                                 <button type="submit" className="bg-red-400 text-white hover:bg-red-600 w-full h-10 hover:cursor-pointer">Log in</button>
+                                {
+                                    showSnackbar && <AutohideSnackbar text={snackMessage} tryOpen={showSnackbar} severity={alertSeverity} />
+                                }
                             </div>
                         </form>
                         <div className="text-center py-5">
@@ -96,8 +117,9 @@ function Login() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </SpotlightCard>
             </div>
+
         </>
     );
 }

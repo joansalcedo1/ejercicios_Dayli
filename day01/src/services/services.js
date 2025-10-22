@@ -12,7 +12,7 @@ export async function getUsuarios() {
 }
 
 export async function login(mail) {
-    let siLoTrajo= true
+    let siLoTrajo = true
     try {
 
         const res = await fetch(`${urlBase}/user`, {
@@ -22,17 +22,49 @@ export async function login(mail) {
         })
         // Manejar errores HTTP
         if (!res.ok) {
-            siLoTrajo=false
+            siLoTrajo = false
             const errText = await res.text();
-            throw new Error(`HTTP ${res.status}: ${errText}`);
+            return res
+
+            
         }
 
         const data = await res.json();
-        const contestacion= {data, siLoTrajo}
+        const contestacion = { data, siLoTrajo }
         return contestacion;
 
     } catch (error) {
         console.error(error);
         return error;
+    }
+}
+
+export async function register(name,mail,pass) {
+    let registroHecho = true;
+    try {
+        const res = await fetch(`${urlBase}/createUser`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "name":  name ,
+                "role": "usuario",
+                "mail": mail,
+                "password": pass
+            })
+        })
+         if (!res.ok) {
+            registroHecho = false
+            const errText = await res.text();
+            throw new Error(`HTTP ${res.status}: ${errText}`);
+        }
+        const data = await res.json();
+        console.log(`Esta es la respuesta desde services: ${data}`)
+        const contestacion = { data, registroHecho }
+        return contestacion;
+
+    } catch (error) {
+        console.error(error)
+        return error 
+
     }
 }

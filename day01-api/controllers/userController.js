@@ -2,11 +2,6 @@ const {Console } = require("console");
 const accountModel = require("../schemas/account_Schema");
 const userModel = require("../schemas/users_Schema");
 
-exports.mensaje = (req,res)=>{
-    console.log("Hola desde el controlador")
-    return res.status(200).send("Hola desde el controlador");
-}
-
 exports.createUser= async (req,res)=>{
     try {
         const content = req.body;
@@ -17,7 +12,7 @@ exports.createUser= async (req,res)=>{
         const newUser = await userModel.create(content);
 
         if(content.role=="admin"){
-            return res.status(200).json({message:`Admin ${newUser.name} creado sin cuenta con exito`})
+            return res.status(201).json({message:`Admin ${newUser.name} creado sin cuenta con exito`})
         }
         
         const newAccount = await accountModel.create({
@@ -26,10 +21,15 @@ exports.createUser= async (req,res)=>{
             accountNumber: "ACC-" + Date.now(),
             balance:0
         })
-        return res.status(200).json({message:`Usuario ${newUser.name} con cuenta ${newAccount.accountNumber} creado con exito`})
+        return res.status(201).json({message:`Usuario ${newUser.name} con cuenta ${newAccount.accountNumber} creado con exito`})
     } catch (error) {
         console.error(error)
+        if(error.code===11000){
+            const field = Object.keys(error.keyValue)[error.index];
+            return res.status(409).json(`Hubo un conflicto en el campo {${field}}. Ya existe`)
+        }
         return res.status(500).json({message:`No se pudo crear el usuario`})
+        
     }
 }
 
@@ -59,9 +59,8 @@ exports.getUserByMail= async(req,res)=>{
         
         const {mail} = req.body;
         const usuario = await userModel.findOne({'mail': mail});
-        console.log(mail)
         if(!usuario){
-            return res.status(404).json({message:"Usuario no existe"});
+            return res.status(404).json({message:"Usuario no existe manito"});
         }
         return res.status(200).json(usuario);
     } catch (error) {
